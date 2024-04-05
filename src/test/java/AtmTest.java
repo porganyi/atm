@@ -8,7 +8,7 @@ public class AtmTest {
 
     @Test
     public void firstTest() {
-        System.out.println(account01.balance + ", " + account01.currency);
+        System.out.println(account01.balance + " " + Account.DEFAULT_CURRENCY);
     }
 
 }

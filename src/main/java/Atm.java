@@ -10,20 +10,20 @@ public class Atm {
 
     public void showBalance(Account account) {
         if (account.balance > SHOW_BALANCE_LIMIT) {
-            System.out.println(account.balance + ", " + account.currency);
+            System.out.println(account.balance + ", ");
         } else {
             System.out.println(UPPER_LIMIT_TEXT);
         }
     }
 
-    public void makeDeposit(Account account, float amount) {
+    public void makeDeposit(Account account, int amount) {
         account.balance += amount;
         if (amount > DEPOSIT_ALERT_LIMIT) {
             System.out.println(DEPOSIT_ALERT_TEXT);
         }
     }
 
-    public void makeWithdraw(Account account, float amount) {
+    public void makeWithdraw(Account account, int amount) {
         if (amount > account.balance) {
 
         } else {
