@@ -17,22 +17,6 @@ public class AtmTest {
         atmLog.log(account.ownerName + ", " + account.accountNumber + ", " + account.balance + " " + Account.DEFAULT_CURRENCY);
     }
 
-    private static void logMakeDeposit(Account account, int amount) {
-        atmLog.log("DEPOSIT " + account.accountNumber + ", " + amount + ", " + Account.DEFAULT_CURRENCY);
-        logAccountState(account);
-    }
-
-    private static void logMakeWithdraw(Account account, int amount) {
-        atmLog.log("WITHDRAW " + account.accountNumber + ", " + amount + ", " + Account.DEFAULT_CURRENCY);
-        logAccountState(account);
-    }
-
-    private static void logTransfer(Account fromAccount, Account toAccount, int amount) {
-        atmLog.log("TRANSFER " + fromAccount.accountNumber + ", " + toAccount.accountNumber + ", " + amount + ", " + Account.DEFAULT_CURRENCY);
-        logAccountState(fromAccount);
-        logAccountState(toAccount);
-    }
-
     @BeforeEach
     void beforeEach() {
         atmLog.log("");
@@ -41,13 +25,21 @@ public class AtmTest {
     @Test
     public void show_balance_beyond_limit_test() {
         Account account = createAccount("X Y", "1234567890123456", 1000000);
-        Assertions.assertEquals("*****", atm.showBalance(account));
+
+        String message = atm.showBalance(account);
+        logAccountState(account);
+
+        Assertions.assertEquals("*****", message);
     }
 
     @Test
     public void show_balance_within_limit_test() {
         Account account = createAccount("X Y", "1234567890123456", 999999);
-        Assertions.assertEquals("999999 HUF", atm.showBalance(account));
+
+        String message = atm.showBalance(account);
+        logAccountState(account);
+
+        Assertions.assertEquals("999999 HUF", message);
     }
 
     @Test
@@ -55,9 +47,10 @@ public class AtmTest {
         Account account = createAccount("X Y", "1234567890123456", 10);
         int amount = 1;
 
-        atm.makeDeposit(account, amount);
+        String result = atm.makeDeposit(account, amount);
+        logAccountState(account);
 
-        logMakeDeposit(account, amount);
+        Assertions.assertEquals("OK", result);
         Assertions.assertEquals(11, account.balance);
     }
 
@@ -66,9 +59,10 @@ public class AtmTest {
         Account account = createAccount("X Y", "1234567890123456", 10);
         int amount = 1;
 
-        atm.makeWithdraw(account, amount);
+        String result = atm.makeWithdraw(account, amount);
+        logAccountState(account);
 
-        logMakeWithdraw(account, amount);
+        Assertions.assertEquals("OK", result);
         Assertions.assertEquals(9, account.balance);
     }
 
@@ -77,9 +71,10 @@ public class AtmTest {
         Account account = createAccount("X Y", "1234567890123456", 10);
         int amount = 11;
 
-        atm.makeWithdraw(account, amount);
+        String result = atm.makeWithdraw(account, amount);
+        logAccountState(account);
 
-        logMakeWithdraw(account, amount);
+        Assertions.assertEquals("NOT ENOUGH MONEY", result);
         Assertions.assertEquals(10, account.balance);
     }
 
@@ -89,17 +84,40 @@ public class AtmTest {
         Account toAccount = createAccount("Z W", "6543210987654321", 20);
         int amount = 1;
 
-        atm.transfer(fromAccount, toAccount, amount);
+        String result = atm.transfer(fromAccount, toAccount, amount);
+        logAccountState(fromAccount);
+        logAccountState(toAccount);
 
-        logTransfer(fromAccount, toAccount, amount);
+        Assertions.assertEquals("OK", result);
         Assertions.assertEquals(9, fromAccount.balance);
         Assertions.assertEquals(21, toAccount.balance);
+    }
+
+    @Test
+    public void make_transfer_with_not_enough_balance_test() {
+        Account fromAccount = createAccount("X Y", "1234567890123456", 10);
+        Account toAccount = createAccount("Z W", "6543210987654321", 20);
+        int amount = 11;
+
+        String result = atm.transfer(fromAccount, toAccount, amount);
+        logAccountState(fromAccount);
+        logAccountState(toAccount);
+
+        Assertions.assertEquals("NOT ENOUGH MONEY", result);
+        Assertions.assertEquals(10, fromAccount.balance);
+        Assertions.assertEquals(20, toAccount.balance);
     }
 
     @Test
     public void complex_test_with_two_accounts() {
         Account account01 = createAccount("JOHN DOE", "1111222233334444", 2000000);
         Account account02 = createAccount("JACK BLACK", "0000111122223333", 10000);
+        atm.makeDeposit(account02, 12000);
+        atm.makeWithdraw(account01, 9000);
+        atm.showBalance(account02);
+        atm.showBalance(account01);
+        atm.transfer(account01, account02, 20000);
+        atm.transfer(account02, account01, 90000);
     }
 
 }
