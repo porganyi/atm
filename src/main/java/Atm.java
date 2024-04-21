@@ -3,9 +3,10 @@ public class Atm {
     public static final int SHOW_BALANCE_LIMIT = 1000000;
     public static final String UPPER_SHOW_BALANCE_LIMIT_TEXT = "*****";
     public static final String OK = "OK";
+    public static final String OK_WITH_LOG_ALERT = "OK WITH LOG ALERT";
     public static final String NOT_ENOUGH_MONEY = "NOT ENOUGH MONEY";
-    public static final int WITHDRAW_LOG_ALERT_LIMIT = 1000000;
     public static final int DEPOSIT_LOG_ALERT_LIMIT = 1000000;
+    public static final int WITHDRAW_LOG_ALERT_LIMIT = 1000000;
     public static final String LOG_ALERT_TEXT = "LOG ALERT";
 
     private final AtmLog atmLog;
@@ -33,7 +34,11 @@ public class Atm {
     public String makeDeposit(Account account, int amount) {
         account.makeDeposit(amount);
         logMakeDeposit(account, amount);
-        return OK;
+        return getDepositReturnString(amount);
+    }
+
+    private String getDepositReturnString(int amount) {
+        return amount > DEPOSIT_LOG_ALERT_LIMIT ? OK_WITH_LOG_ALERT : OK;
     }
 
     public String makeWithdraw(Account account, int amount) {
@@ -65,7 +70,8 @@ public class Atm {
     }
 
     private void logMakeDeposit(Account account, int amount) {
-        atmLog.log("DEPOSIT " + account.accountNumber + ", " + amount + ", " + Account.DEFAULT_CURRENCY);
+        String logAlertString = amount > DEPOSIT_LOG_ALERT_LIMIT ? " -> " + LOG_ALERT_TEXT : "";
+        atmLog.log("DEPOSIT " + account.accountNumber + ", " + amount + ", " + Account.DEFAULT_CURRENCY + logAlertString);
     }
 
     private void logMakeWithdraw(Account account, int amount, String result) {

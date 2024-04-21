@@ -12,7 +12,7 @@ public class Account {
     }
 
     public static Account create(String ownerName, String accountNumber, int balance) {
-        if (ownerName.replaceAll(" ", "").isEmpty()) {
+        if (!isOwnerNameGood(ownerName)) {
             throw new Error("Wrong owner name!");
         }
         if (!isAccountNumberGood(accountNumber)) {
@@ -22,6 +22,10 @@ public class Account {
             throw new Error("Wrong account balance");
         }
         return new Account(ownerName, accountNumber, balance);
+    }
+
+    private static boolean isOwnerNameGood(String ownerName) {
+        return !ownerName.replaceAll(" ", "").isEmpty();
     }
 
     private static boolean isAccountNumberGood(String accountNumber) {

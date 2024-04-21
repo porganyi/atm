@@ -17,6 +17,10 @@ public class AtmTest {
         atmLog.log(account.ownerName + ", " + account.accountNumber + ", " + account.balance + " " + Account.DEFAULT_CURRENCY);
     }
 
+    private static void logResult(String result) {
+        atmLog.log("Result: " + result);
+    }
+
     @BeforeEach
     void beforeEach() {
         atmLog.log("");
@@ -48,10 +52,24 @@ public class AtmTest {
         int amount = 1;
 
         String result = atm.makeDeposit(account, amount);
+        logResult(result);
         logAccountState(account);
 
         Assertions.assertEquals("OK", result);
         Assertions.assertEquals(11, account.balance);
+    }
+
+    @Test
+    public void make_deposit_with_log_alert_test() {
+        Account account = createAccount("X Y", "1234567890123456", 10);
+        int amount = 1000001;
+
+        String result = atm.makeDeposit(account, amount);
+        logResult(result);
+        logAccountState(account);
+
+        Assertions.assertEquals("OK WITH LOG ALERT", result);
+        Assertions.assertEquals(1000011, account.balance);
     }
 
     @Test
@@ -60,6 +78,7 @@ public class AtmTest {
         int amount = 1;
 
         String result = atm.makeWithdraw(account, amount);
+        logResult(result);
         logAccountState(account);
 
         Assertions.assertEquals("OK", result);
@@ -72,6 +91,7 @@ public class AtmTest {
         int amount = 11;
 
         String result = atm.makeWithdraw(account, amount);
+        logResult(result);
         logAccountState(account);
 
         Assertions.assertEquals("NOT ENOUGH MONEY", result);
@@ -85,6 +105,7 @@ public class AtmTest {
         int amount = 1;
 
         String result = atm.transfer(fromAccount, toAccount, amount);
+        logResult(result);
         logAccountState(fromAccount);
         logAccountState(toAccount);
 
@@ -100,6 +121,7 @@ public class AtmTest {
         int amount = 11;
 
         String result = atm.transfer(fromAccount, toAccount, amount);
+        logResult(result);
         logAccountState(fromAccount);
         logAccountState(toAccount);
 
@@ -118,6 +140,7 @@ public class AtmTest {
         atm.showBalance(account01);
         atm.transfer(account01, account02, 20000);
         atm.transfer(account02, account01, 90000);
+        atm.makeDeposit(account01, 1500000);
     }
 
 }
