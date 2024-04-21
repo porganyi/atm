@@ -3,15 +3,15 @@ public class Account {
     public static final Currency DEFAULT_CURRENCY = Currency.HUF;
     public String ownerName;
     public String accountNumber;
-    public int balance;
+    public long balance;
 
-    private Account(String ownerName, String accountNumber, int balance) {
+    private Account(String ownerName, String accountNumber, long balance) {
         this.ownerName = ownerName;
         this.accountNumber = accountNumber;
         this.balance = balance;
     }
 
-    public static Account create(String ownerName, String accountNumber, int balance) {
+    public static Account create(String ownerName, String accountNumber, long balance) {
         if (!isOwnerNameGood(ownerName)) {
             throw new Error("Wrong owner name!");
         }
@@ -40,17 +40,27 @@ public class Account {
         return true;
     }
 
-    public void makeDeposit(int amount) {
+    public void makeDeposit(long amount) {
+        makeDeposit(amount, Currency.HUF);
+    }
+
+    public void makeDeposit(double amount, Currency currency) {
         if (amount < 0) {
             throw new Error("Deposit amount is negative!");
         }
-        balance += amount;
+        long amountInHuf = Math.round(amount / currency.hufToCurrency);
+        balance += amountInHuf;
     }
 
-    public void makeWithdraw(int amount) {
+    public void makeWithdraw(long amount) {
+        makeWithdraw(amount, Currency.HUF);
+    }
+
+    public void makeWithdraw(double amount, Currency currency) {
         if (amount < 0) {
             throw new Error("Withdraw amount is negative!");
         }
-        balance -= amount;
+        long amountInHuf = Math.round(amount / currency.hufToCurrency);
+        balance -= amountInHuf;
     }
 }
