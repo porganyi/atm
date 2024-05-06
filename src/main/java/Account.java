@@ -1,18 +1,13 @@
 public class Account {
 
-    public static final Currency DEFAULT_CURRENCY = Currency.HUF;
+    public final Currency DEFAULT_CURRENCY = Currency.HUF;
+    public final int ACCOUNT_NUMBER_LENGTH = 16;
     public String ownerName;
     public String accountNumber;
     public long balance;
 
-    private Account(String ownerName, String accountNumber, long balance) {
-        this.ownerName = ownerName;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
-    }
-
-    public static Account create(String ownerName, String accountNumber, long balance) {
-        if (!isOwnerNameGood(ownerName)) {
+    public Account(String ownerName, String accountNumber, long balance) {
+        if (!isValidOwnerName(ownerName)) {
             throw new Error("Wrong owner name!");
         }
         if (!isAccountNumberGood(accountNumber)) {
@@ -21,15 +16,20 @@ public class Account {
         if (balance < 0) {
             throw new Error("Wrong account balance");
         }
-        return new Account(ownerName, accountNumber, balance);
+        this.ownerName = ownerName;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
     }
 
-    private static boolean isOwnerNameGood(String ownerName) {
+    //     Todo végiggondolni, hol private,
+//     kiemelni a create-et
+//     hibakezelés lejjebb
+    private boolean isValidOwnerName(String ownerName) {
         return !ownerName.replaceAll(" ", "").isEmpty();
     }
 
-    private static boolean isAccountNumberGood(String accountNumber) {
-        if (accountNumber.length() != 16) {
+    private boolean isAccountNumberGood(String accountNumber) {
+        if (accountNumber.length() != this.ACCOUNT_NUMBER_LENGTH) {
             return false;
         }
         for (char c : accountNumber.toCharArray()) {

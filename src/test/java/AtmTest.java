@@ -4,25 +4,25 @@ import org.junit.jupiter.api.Test;
 
 public class AtmTest {
 
-    private static final AtmLog atmLog = new AtmLog();
-    private static final AtmPrint atmPrint = new AtmPrint();
-    private static final Atm atm = new Atm(atmLog, atmPrint);
+    private final AtmLog atmLog = new AtmLog();
+    private final AtmPrint atmPrint = new AtmPrint();
+    private final Atm atm = new Atm(atmLog, atmPrint);
 
-    private static Account createAccount(String ownerName, String accountNumber, long balance) {
-        Account account = Account.create(ownerName, accountNumber, balance);
+    private Account createAccount(String ownerName, String accountNumber, long balance) {
+        Account account = new Account(ownerName, accountNumber, balance);
         logAccountState(account);
         return account;
     }
 
-    private static void logAccountState(Account account) {
-        atmLog.log(account.ownerName + ", " + account.accountNumber + ", " + account.balance + " " + Account.DEFAULT_CURRENCY);
+    private void logAccountState(Account account) {
+        atmLog.log(account.ownerName + ", " + account.accountNumber + ", " + account.balance + " " + account.DEFAULT_CURRENCY);
     }
 
-    private static void logResult(String result) {
+    private void logResult(String result) {
         atmLog.log("Result: " + result);
     }
 
-    private static void logExchangeRates() {
+    private void logExchangeRates() {
         StringBuilder exchangeRatesString = new StringBuilder("1 HUF");
         for (Currency currency : Currency.values()) {
             if (currency != Currency.HUF) {

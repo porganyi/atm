@@ -1,13 +1,13 @@
 public class Atm {
 
-    public static final long SHOW_BALANCE_LIMIT = 1000000;
-    public static final String UPPER_SHOW_BALANCE_LIMIT_TEXT = "*****";
-    public static final String OK = "OK";
-    public static final String OK_WITH_LOG_ALERT = "OK WITH LOG ALERT";
-    public static final String NOT_ENOUGH_MONEY = "NOT ENOUGH MONEY";
-    public static final long DEPOSIT_LOG_ALERT_LIMIT = 1000000;
-    public static final long WITHDRAW_LOG_ALERT_LIMIT = 1000000;
-    public static final String LOG_ALERT_TEXT = "LOG ALERT";
+    public final long SHOW_BALANCE_LIMIT = 1000000;
+    public final String UPPER_SHOW_BALANCE_LIMIT_TEXT = "*****";
+    public final String OK = "OK";
+    public final String OK_WITH_LOG_ALERT = "OK WITH LOG ALERT";
+    public final String NOT_ENOUGH_MONEY = "NOT ENOUGH MONEY";
+    public final long DEPOSIT_LOG_ALERT_LIMIT = 1000000;
+    public final long WITHDRAW_LOG_ALERT_LIMIT = 1000000;
+    public final String LOG_ALERT_TEXT = "LOG ALERT";
 
     private final AtmLog atmLog;
     private final AtmPrint atmPrint;
@@ -26,7 +26,7 @@ public class Atm {
     }
 
     private String showBalanceWithinLimit(Account account) {
-        return account.balance + " " + Account.DEFAULT_CURRENCY;
+        return account.balance + " " + account.DEFAULT_CURRENCY;
     }
 
     private String showBalanceBeyondLimit() {
@@ -85,7 +85,7 @@ public class Atm {
         atmPrint.printLine("====================");
         atmPrint.printLine("NAME: " + account.ownerName);
         atmPrint.printLine("ACCOUNT NR.: " + account.accountNumber);
-        atmPrint.printLine("BALANCE: " + account.balance + " " + Account.DEFAULT_CURRENCY);
+        atmPrint.printLine("BALANCE: " + account.balance + " " + account.DEFAULT_CURRENCY);
         atmPrint.printLine("====================");
     }
 
@@ -112,7 +112,7 @@ public class Atm {
 
     private void logTransfer(Account fromAccount, Account toAccount, long amount, String result) {
         String logAlertString = amount > WITHDRAW_LOG_ALERT_LIMIT ? " -> " + LOG_ALERT_TEXT : "";
-        atmLog.log("TRANSFER " + fromAccount.accountNumber + ", " + toAccount.accountNumber + ", " + amount + ", " + Account.DEFAULT_CURRENCY +
+        atmLog.log("TRANSFER " + fromAccount.accountNumber + ", " + toAccount.accountNumber + ", " + amount + ", " + fromAccount.DEFAULT_CURRENCY +
                 (result.equals("OK") ? logAlertString : " -> " + "\"" + result + "\""));
     }
 
