@@ -1,13 +1,13 @@
 public class Atm {
 
-    public final long SHOW_BALANCE_LIMIT = 1000000;
-    public final String UPPER_SHOW_BALANCE_LIMIT_TEXT = "*****";
-    public final String OK = "OK";
-    public final String OK_WITH_LOG_ALERT = "OK WITH LOG ALERT";
-    public final String NOT_ENOUGH_MONEY = "NOT ENOUGH MONEY";
-    public final long DEPOSIT_LOG_ALERT_LIMIT = 1000000;
-    public final long WITHDRAW_LOG_ALERT_LIMIT = 1000000;
-    public final String LOG_ALERT_TEXT = "LOG ALERT";
+    private static final long SHOW_BALANCE_LIMIT = 1000000;
+    private static final String UPPER_SHOW_BALANCE_LIMIT_TEXT = "*****";
+    private static final String OK = "OK";
+    private static final String OK_WITH_LOG_ALERT = "OK WITH LOG ALERT";
+    private static final String NOT_ENOUGH_MONEY = "NOT ENOUGH MONEY";
+    private static final long DEPOSIT_LOG_ALERT_LIMIT = 1000000;
+    private static final long WITHDRAW_LOG_ALERT_LIMIT = 1000000;
+    private static final String LOG_ALERT_TEXT = "LOG ALERT";
 
     private final AtmLog atmLog;
     private final AtmPrint atmPrint;
@@ -18,7 +18,7 @@ public class Atm {
     }
 
     public String showBalance(Account account) {
-        String balanceText = account.balance < SHOW_BALANCE_LIMIT
+        String balanceText = account.getBalance() < SHOW_BALANCE_LIMIT
                 ? showBalanceWithinLimit(account)
                 : showBalanceBeyondLimit();
         logShowBalance(account, balanceText);
@@ -26,7 +26,7 @@ public class Atm {
     }
 
     private String showBalanceWithinLimit(Account account) {
-        return account.balance + " " + account.DEFAULT_CURRENCY;
+        return account.getBalance() + " " + Account.DEFAULT_CURRENCY;
     }
 
     private String showBalanceBeyondLimit() {
@@ -54,7 +54,7 @@ public class Atm {
 
     public String makeWithdraw(Account account, double amount, Currency currency) {
         long amountInHuf = Math.round(amount / currency.hufToCurrency);
-        if (amountInHuf > account.balance) {
+        if (amountInHuf > account.getBalance()) {
             logMakeWithdraw(account, amount, currency, NOT_ENOUGH_MONEY);
             return NOT_ENOUGH_MONEY;
         } else {
@@ -69,7 +69,7 @@ public class Atm {
     }
 
     public String transfer(Account fromAccount, Account toAccount, long amount) {
-        if (amount > fromAccount.balance) {
+        if (amount > fromAccount.getBalance()) {
             logTransfer(fromAccount, toAccount, amount, NOT_ENOUGH_MONEY);
             return NOT_ENOUGH_MONEY;
         } else {
@@ -83,9 +83,9 @@ public class Atm {
     public void printBalance(Account account) {
         logPrintBalance(account);
         atmPrint.printLine("====================");
-        atmPrint.printLine("NAME: " + account.ownerName);
-        atmPrint.printLine("ACCOUNT NR.: " + account.accountNumber);
-        atmPrint.printLine("BALANCE: " + account.balance + " " + account.DEFAULT_CURRENCY);
+        atmPrint.printLine("NAME: " + account.getOwnerName());
+        atmPrint.printLine("ACCOUNT NR.: " + account.getAccountNumber());
+        atmPrint.printLine("BALANCE: " + account.getBalance() + " " + Account.DEFAULT_CURRENCY);
         atmPrint.printLine("====================");
     }
 
@@ -94,29 +94,29 @@ public class Atm {
     }
 
     private void logShowBalance(Account account, String balanceText) {
-        atmLog.log("SHOW " + account.accountNumber + " -> " + balanceText);
+        atmLog.log("SHOW " + account.getAccountNumber() + " -> " + balanceText);
     }
 
     private void logMakeDeposit(Account account, double amount, Currency currency) {
         String amountString = currency == Currency.HUF ? String.valueOf(Math.round(amount)) : String.valueOf(amount);
         String logAlertString = amount > DEPOSIT_LOG_ALERT_LIMIT ? " -> " + LOG_ALERT_TEXT : "";
-        atmLog.log("DEPOSIT " + account.accountNumber + ", " + amountString + ", " + currency + logAlertString);
+        atmLog.log("DEPOSIT " + account.getAccountNumber() + ", " + amountString + ", " + currency + logAlertString);
     }
 
     private void logMakeWithdraw(Account account, double amount, Currency currency, String result) {
         String amountString = currency == Currency.HUF ? String.valueOf(Math.round(amount)) : String.valueOf(amount);
         String logAlertString = amount > WITHDRAW_LOG_ALERT_LIMIT ? " -> " + LOG_ALERT_TEXT : "";
-        atmLog.log("WITHDRAW " + account.accountNumber + ", " + amountString + ", " + currency +
+        atmLog.log("WITHDRAW " + account.getAccountNumber() + ", " + amountString + ", " + currency +
                 (result.equals("OK") ? logAlertString : " -> " + "\"" + result + "\""));
     }
 
     private void logTransfer(Account fromAccount, Account toAccount, long amount, String result) {
         String logAlertString = amount > WITHDRAW_LOG_ALERT_LIMIT ? " -> " + LOG_ALERT_TEXT : "";
-        atmLog.log("TRANSFER " + fromAccount.accountNumber + ", " + toAccount.accountNumber + ", " + amount + ", " + fromAccount.DEFAULT_CURRENCY +
+        atmLog.log("TRANSFER " + fromAccount.getAccountNumber() + ", " + toAccount.getAccountNumber() + ", " + amount + ", " + Account.DEFAULT_CURRENCY +
                 (result.equals("OK") ? logAlertString : " -> " + "\"" + result + "\""));
     }
 
     private void logPrintBalance(Account account) {
-        atmLog.log("PRINT " + account.accountNumber + " ->");
+        atmLog.log("PRINT " + account.getAccountNumber() + " ->");
     }
 }

@@ -15,7 +15,8 @@ public class AtmTest {
     }
 
     private void logAccountState(Account account) {
-        atmLog.log(account.ownerName + ", " + account.accountNumber + ", " + account.balance + " " + account.DEFAULT_CURRENCY);
+        atmLog.log(account.getOwnerName() + ", " + account.getAccountNumber() + ", "
+                + account.getBalance() + " " + Account.DEFAULT_CURRENCY);
     }
 
     private void logResult(String result) {
@@ -67,7 +68,7 @@ public class AtmTest {
         logAccountState(account);
 
         Assertions.assertEquals("OK", result);
-        Assertions.assertEquals(11, account.balance);
+        Assertions.assertEquals(11, account.getBalance());
     }
 
     @Test
@@ -80,7 +81,7 @@ public class AtmTest {
         logAccountState(account);
 
         Assertions.assertEquals("OK", result);
-        Assertions.assertEquals(11, account.balance);
+        Assertions.assertEquals(11, account.getBalance());
     }
 
     @Test
@@ -93,7 +94,7 @@ public class AtmTest {
         logAccountState(account);
 
         Assertions.assertEquals("OK WITH LOG ALERT", result);
-        Assertions.assertEquals(1000011, account.balance);
+        Assertions.assertEquals(1000011, account.getBalance());
     }
 
     @Test
@@ -106,7 +107,7 @@ public class AtmTest {
         logAccountState(account);
 
         Assertions.assertEquals("OK", result);
-        Assertions.assertEquals(9, account.balance);
+        Assertions.assertEquals(9, account.getBalance());
     }
 
     @Test
@@ -119,7 +120,7 @@ public class AtmTest {
         logAccountState(account);
 
         Assertions.assertEquals("OK WITH LOG ALERT", result);
-        Assertions.assertEquals(9, account.balance);
+        Assertions.assertEquals(9, account.getBalance());
     }
 
     @Test
@@ -132,7 +133,7 @@ public class AtmTest {
         logAccountState(account);
 
         Assertions.assertEquals("NOT ENOUGH MONEY", result);
-        Assertions.assertEquals(10, account.balance);
+        Assertions.assertEquals(10, account.getBalance());
     }
 
     @Test
@@ -147,8 +148,8 @@ public class AtmTest {
         logAccountState(toAccount);
 
         Assertions.assertEquals("OK", result);
-        Assertions.assertEquals(9, fromAccount.balance);
-        Assertions.assertEquals(21, toAccount.balance);
+        Assertions.assertEquals(9, fromAccount.getBalance());
+        Assertions.assertEquals(21, toAccount.getBalance());
     }
 
     @Test
@@ -163,8 +164,8 @@ public class AtmTest {
         logAccountState(toAccount);
 
         Assertions.assertEquals("OK WITH LOG ALERT", result);
-        Assertions.assertEquals(9, fromAccount.balance);
-        Assertions.assertEquals(1000021, toAccount.balance);
+        Assertions.assertEquals(9, fromAccount.getBalance());
+        Assertions.assertEquals(1000021, toAccount.getBalance());
     }
 
     @Test
@@ -179,8 +180,8 @@ public class AtmTest {
         logAccountState(toAccount);
 
         Assertions.assertEquals("NOT ENOUGH MONEY", result);
-        Assertions.assertEquals(10, fromAccount.balance);
-        Assertions.assertEquals(20, toAccount.balance);
+        Assertions.assertEquals(10, fromAccount.getBalance());
+        Assertions.assertEquals(20, toAccount.getBalance());
     }
 
     @Test
@@ -207,8 +208,8 @@ public class AtmTest {
         atm.makeWithdraw(account01, 20, Currency.EUR);
         balance1 -= Math.round(20 / Currency.EUR.hufToCurrency);
         atm.printBalance(account01);
-        Assertions.assertEquals(balance1, account01.balance);
-        Assertions.assertEquals(balance2, account02.balance);
+        Assertions.assertEquals(balance1, account01.getBalance());
+        Assertions.assertEquals(balance2, account02.getBalance());
     }
 
 }
